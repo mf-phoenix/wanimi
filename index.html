@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Mockup</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #131314; /* Gemini風のダークモード背景 */
+            color: #e3e3e3;
+            height: 100vh;
+        }
+
+        /* サイドバー */
+        .sidebar {
+            width: 240px;
+            background-color: #1e1f20;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .new-chat-btn {
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            color: white;
+            padding: 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* メインチャットエリア */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 20%px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* メッセージのスタイル */
+        .message {
+            display: flex;
+            gap: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .user-message .avatar {
+            background-color: #5f6368;
+        }
+
+        .ai-message .avatar {
+            background: linear-gradient(45deg, #1a73e8, #9333ea);
+        }
+
+        .message-text {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* 入力エリア */
+        .input-container {
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .input-box {
+            display: flex;
+            background-color: #1e1f20;
+            border-radius: 30px;
+            padding: 10px 20px;
+            align-items: center;
+        }
+
+        .input-box input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            padding: 10px;
+        }
+
+        .send-btn {
+            background: none;
+            border: none;
+            color: #8ab4f8;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 0 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Gemini Mock</h2>
+        <div class="new-chat-btn">+ 新しいチャット</div>
+    </div>
+
+    <div class="main-content">
+        <div class="chat-container" id="chatContainer">
+            <div class="message ai-message">
+                <div class="avatar">G</div>
+                <div class="message-text">こんにちは！私はGeminiのモックアップAIです。何かお手伝いできることはありますか？</div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <div class="input-box">
+                <input type="text" id="userInput" placeholder="ここにプロンプトを入力してください" onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendMessage()">送信</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 定型文のリスト
+        const replies = [
+            "それはとても興味深い質問ですね！詳しく教えてください。",
+            "分かりました。その件について詳しく調べてみましょう。",
+            "私はAIの形をしたモックアップ（試作品）なので、高度な計算は苦手ですが、応援しています！",
+            "おもしろい視点ですね。他にはどんなことが気になりますか？"
+        ];
+
+        function sendMessage() {
+            const inputElement = document.getElementById('userInput');
+            const messageText = inputElement.value.trim();
+            
+            if (messageText === "") return;
+
+            const chatContainer = document.getElementById('chatContainer');
+
+            // 1. ユーザーのメッセージを追加
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user-message';
+            userDiv.innerHTML = `<div class="avatar">U</div><div class="message-text">${messageText}</div>`;
+            chatContainer.appendChild(userDiv);
+
+            // 入力欄をクリア
+            inputElement.value = "";
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // 2. 少し遅れてAIの定型文を返す（擬似的な思考時間）
+            setTimeout(() => {
+                // ランダムに定型文を選ぶ
+                const randomReply = replies[Math.floor(Math.random() * replies.length)];
+
+                const aiDiv = document.createElement('div');
+                aiDiv.className = 'message ai-message';
+                aiDiv.innerHTML = `<div class="avatar">G</div><div class="message-text">${randomReply}</div>`;
+                chatContainer.appendChild(aiDiv);
+                
+                // 最下部までスクロール
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 800);
+        }
+
+        // Enterキーでも送信できるようにする
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+    </script>
+</body>
+</html>
